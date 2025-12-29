@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Un Regalo Mágico - Efteling</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+
+        :root {
+            --magic-purple: #2d1b4e;
+            --magic-gold: #f3cf7a;
+            --magic-accent: #e0acff;
+            --magic-dark: #0f0a1e;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--magic-dark);
+            color: #fff;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+
+        h1, h2, h3, .magic-font {
+            font-family: 'Cinzel', serif;
+        }
+
+        /* --- MAGIC BACKGROUND --- */
+        .stars-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #1b1437 0%, #05050a 100%);
+            z-index: -1;
+        }
+
+        /* --- LOCK SCREEN --- */
+        #lock-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            transition: all 1.2s cubic-bezier(0.7, 0, 0.3, 1);
+            padding: 1rem;
+        }
+
+        .gift-container {
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            margin-bottom: 2rem;
+        }
+
+        .gift-box {
+            font-size: clamp(4rem, 15vw, 7rem);
+            color: var(--magic-gold);
+            filter: drop-shadow(0 0 30px rgba(243, 207, 122, 0.4));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .input-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            padding: 2.5rem;
+            border-radius: 24px;
+            border: 1px solid rgba(243, 207, 122, 0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        input {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(243, 207, 122, 0.5);
+            color: var(--magic-gold);
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            width: 100%;
+            font-size: 1.2rem;
+            outline: none;
+            transition: all 0.3s;
+            text-align: center;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        input:focus {
+            border-color: var(--magic-accent);
+            box-shadow: 0 0 20px rgba(224, 172, 255, 0.4);
+        }
+
+        .magic-btn {
+            background: linear-gradient(135deg, var(--magic-gold), #b38a38);
+            color: var(--magic-dark);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            width: 100%;
+            border: none;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .magic-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px var(--magic-gold);
+        }
+
+        /* --- VIDEO SCREEN --- */
+        #video-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 90;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 1s ease;
+            padding: 1rem;
+        }
+
+        .video-box {
+            width: 100%;
+            max-width: 1100px;
+            aspect-ratio: 16/9;
+            border: 1px solid var(--magic-gold);
+            box-shadow: 0 0 100px rgba(179, 138, 56, 0.2);
+            background: #000;
+            position: relative;
+        }
+
+        /* --- CONTENT SECTION --- */
+        #main-content {
+            display: none;
+            padding: 4rem 1rem;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+            width: 100%;
+        }
+
+        .hero-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 32px;
+            overflow: hidden;
+            margin-bottom: clamp(3rem, 10vh, 6rem);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            transition: transform 0.5s ease;
+            width: 100%;
+        }
+
+        @media (min-width: 1024px) {
+            .hero-card { flex-direction: row; min-height: 550px; }
+            .hero-card.reverse { flex-direction: row-reverse; }
+            .hero-img { width: 55%; min-height: 100%; }
+            .hero-text { width: 45%; padding: 4rem; }
+        }
+
+        .hero-img {
+            min-height: 300px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            width: 100%;
+        }
+
+        .hero-text {
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: rgba(15, 10, 30, 0.8);
+        }
+
+        .tag {
+            color: var(--magic-gold);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 3px;
+            font-size: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-badge {
+            background: rgba(243, 207, 122, 0.1);
+            color: var(--magic-gold);
+            padding: 0.6rem 1.2rem;
+            border-radius: 99px;
+            display: inline-block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(243, 207, 122, 0.2);
+        }
+
+        .official-link {
+            background: linear-gradient(135deg, #ffffff, #f0f0f0);
+            color: var(--magic-dark);
+            padding: clamp(1rem, 5vw, 2rem);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            transition: all 0.4s;
+            max-width: 700px;
+            margin: 4rem auto;
+            border-bottom: 6px solid var(--magic-gold);
+            width: 100%;
+        }
+
+        .official-link:hover { 
+            transform: scale(1.03); 
+            box-shadow: 0 15px 40px rgba(243, 207, 122, 0.3);
+        }
+
+        /* portal animation */
+        .portal-open {
+            transform: scale(20);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .fade-in { animation: fadeIn 1.2s forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Responsive Title scaling */
+        .title-text {
+            font-size: clamp(2.5rem, 8vw, 6rem);
+            line-height: 1.1;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="stars-bg"></div>
+
+    <!-- 1. LOCK SCREEN -->
+    <div id="lock-screen">
+        <div class="gift-container" id="gift-trigger">
+            <i class="fas fa-hat-wizard gift-box"></i>
+        </div>
+        
+        <div class="input-card fade-in">
+            <h2 class="text-2xl mb-6 text-white font-bold tracking-widest uppercase magic-font">Revelar el Destino</h2>
+            <div class="mb-4">
+                <input type="text" id="password-input" placeholder="PALABRA MÁGICA" onkeypress="handleEnter(event)" oninput="this.value = this.value.toUpperCase()">
+            </div>
+            <button class="magic-btn" onclick="unlock()">Iniciar Viaje</button>
+            <p id="error-msg" class="text-red-400 mt-4 h-4 text-sm opacity-0 transition-opacity">El portal permanece cerrado...</p>
+        </div>
+    </div>
+
+    <!-- 2. VIDEO OVERLAY -->
+    <div id="video-screen">
+        <div class="video-box">
+            <iframe 
+                id="player-frame"
+                width="100%" height="100%" 
+                src="https://www.youtube-nocookie.com/embed/4oIE1qoMDQM?enablejsapi=1&rel=0&autoplay=0" 
+                title="Efteling Experience" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowfullscreen>
+            </iframe>
+        </div>
+        <div class="mt-8 flex flex-col sm:flex-row gap-4">
+            <button onclick="skipToInfo()" class="px-10 py-4 rounded-full border-2 border-white/20 text-white font-bold hover:bg-white/10 hover:border-white/50 transition-all uppercase tracking-widest text-xs">
+                Saltar a la Información
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. MAIN CONTENT -->
+    <div id="main-content" class="container mx-auto px-4 max-w-6xl">
+        <div class="text-center mb-12 md:mb-24">
+            <span class="tag">Bienvenidos a</span>
+            <h1 class="title-text mb-6 text-[#f3cf7a] magic-font">Efteling</h1>
+            <p class="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
+                Más que un parque de atracciones, es un "Mundo de Maravillas" donde los cuentos europeos cobran vida con una atmósfera única en el mundo.
+            </p>
+        </div>
+
+        <!-- Section 1: Sprookjesbos -->
+        <div class="hero-card fade-in">
+            <div class="hero-img" style="background-image: url('https://www.efteling.com/nl/-/media/images/blog/tips/20200710-ontdek-het-sprookjesbos/650x370-sprookjesboom.jpg?h=370&w=650&la=nl&hash=EED6A7EED70ABB86E7125D35ABBAB937')"></div>
+            <div class="hero-text">
+                <span class="tag">Icono Histórico</span>
+                <h2 class="text-3xl md:text-4xl mb-4 text-[#f3cf7a] magic-font">Bosque de Cuentos</h2>
+                <div class="stat-badge"><i class="fas fa-tree mr-2"></i> 30 Cuentos Diferentes</div>
+                <p class="text-gray-300 leading-relaxed mb-6">
+                    El alma de Efteling. Camina por un sendero sombreado donde encontrarás a la Bella Durmiente, el Lobo y los siete cabritillos, y al famoso Dragón que escupe fuego si intentas tocar su tesoro.
+                </p>
+                <div class="flex gap-2 text-xs font-bold uppercase text-white/50">
+                    <span>Grimm</span> • <span>Andersen</span> • <span>Perrault</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Baron 1898 -->
+        <div class="hero-card reverse fade-in" style="animation-delay: 0.2s">
+            <div class="hero-img" style="background-image: url('https://content.presspage.com/uploads/1828/800_efteling-baron-1898-schachttoren.jpg?10000')"></div>
+            <div class="hero-text">
+                <span class="tag">Dive Coaster</span>
+                <h2 class="text-3xl md:text-4xl mb-4 text-[#f3cf7a] magic-font">Baron 1898</h2>
+                <div class="stat-badge"><i class="fas fa-bolt mr-2"></i> Caída Libre 90°</div>
+                <p class="text-gray-300 leading-relaxed mb-6">
+                    Conviértete en un minero y enfréntate a las "Witte Wieven" (Mujeres Blancas) en esta espectacular montaña rusa tematizada en una mina de oro del siglo XIX. La tematización comienza antes de subir, con una historia narrada por el propio Barón.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <span class="text-xs border border-white/20 px-3 py-1 rounded bg-white/5">90 km/h</span>
+                    <span class="text-xs border border-white/20 px-3 py-1 rounded bg-white/5">Experiencia Inmersiva</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Joris en de Draak -->
+        <div class="hero-card fade-in" style="animation-delay: 0.3s">
+            <div class="hero-img" style="background-image: url('https://content.presspage.com/uploads/1828/800_efteling-joris-en-de-draak-draak.jpg?85164')"></div>
+            <div class="hero-text">
+                <span class="tag">Madera y Fuego</span>
+                <h2 class="text-3xl md:text-4xl mb-4 text-[#f3cf7a] magic-font">Joris en de Draak</h2>
+                <div class="stat-badge"><i class="fas fa-dragon mr-2"></i> Duelo de Dragones</div>
+                <p class="text-gray-300 leading-relaxed mb-6">
+                    Una montaña rusa de madera de doble carril donde dos trenes (Agua y Fuego) compiten para ver quién llega primero mientras un enorme dragón animatrónico de 10 metros de altura intenta detenerlos.
+                </p>
+                <div class="text-[#f3cf7a] font-bold italic">¡El equipo ganador recibe una ovación en la meta!</div>
+            </div>
+        </div>
+
+        <!-- Section 4: Symbolica -->
+        <div class="hero-card reverse fade-in" style="animation-delay: 0.4s">
+            <div class="hero-img" style="background-image: url('https://content.presspage.com/uploads/1828/e59f0e30-68b5-4d76-9972-a7b351000651/800_winterefteling-symbolica.jpg?10000')"></div>
+            <div class="hero-text">
+                <span class="tag">Dark Ride</span>
+                <h2 class="text-3xl md:text-4xl mb-4 text-[#f3cf7a] magic-font">Symbolica</h2>
+                <div class="stat-badge"><i class="fas fa-crown mr-2"></i> Palacio de Fantasía</div>
+                <p class="text-gray-300 leading-relaxed mb-6">
+                    La atracción más cara de la historia del parque. Un viaje sin railes a través de las estancias mágicas del Rey Pardulfus. Elige una de las tres rutas: Tesoros, Música o Héroes.
+                </p>
+                <button onclick="window.open('https://www.efteling.com', '_blank')" class="mt-4 text-left font-bold text-[#f3cf7a] hover:text-white transition uppercase text-xs tracking-widest">
+                    Explorar más atracciones <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Section 5: Droomvlucht -->
+        <div class="hero-card fade-in" style="animation-delay: 0.5s">
+            <div class="hero-img" style="background-image: url('https://content.presspage.com/uploads/1828/39db1a8a-5395-4fe4-aa5e-7de2b1d3dbaf/1920_droomvlucht-elfjeszingendopeentak.jpg')"></div>
+            <div class="hero-text">
+                <span class="tag">Vuelo Onírico</span>
+                <h2 class="text-3xl md:text-4xl mb-4 text-[#f3cf7a] magic-font">Droomvlucht</h2>
+                <div class="stat-badge"><i class="fas fa-leaf mr-2"></i> Reino de las Hadas</div>
+                <p class="text-gray-300 leading-relaxed mb-6">
+                    Flota a través de planetas, jardines encantados y castillos en el aire. Es la atracción favorita de muchos por su increíble belleza visual y su música hipnótica.
+                </p>
+            </div>
+        </div>
+
+        <!-- Official Call to Action -->
+        <div class="text-center py-12 md:py-20">
+            <h3 class="text-2xl md:text-3xl mb-8 magic-font text-white">¿Estás listo para vivir el cuento?</h3>
+            <a href="https://www.efteling.com/es" target="_blank" class="official-link group">
+                <div class="flex items-center text-left">
+                    <div class="hidden sm:block bg-gray-100 p-4 rounded-2xl mr-6 group-hover:bg-[#f3cf7a] transition-colors duration-500 shadow-inner">
+                        <i class="fas fa-compass text-3xl text-[#2d1b4e]"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-extrabold text-xl md:text-2xl tracking-tight">Planifica tu Aventura</h4>
+                        <p class="text-gray-500 font-medium text-sm">Sitio Oficial de Efteling</p>
+                    </div>
+                </div>
+                <div class="bg-[#2d1b4e] text-white w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center group-hover:translate-x-2 transition-transform">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </a>
+        </div>
+
+        <div class="text-center pb-12 md:pb-20 opacity-40 text-[10px] md:text-xs tracking-widest uppercase">
+            <p>Efteling • El Parque donde los cuentos cobran vida • 2025</p>
+        </div>
+    </div>
+
+    <!-- YouTube API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <script>
+        const PWD = "EFTELING";
+        let ytPlayer;
+
+        // YouTube Setup
+        function onYouTubeIframeAPIReady() {
+            ytPlayer = new YT.Player('player-frame', {
+                events: { 'onStateChange': (e) => { if(e.data === 0) skipToInfo(); } }
+            });
+        }
+
+        function handleEnter(e) { if(e.key === "Enter") unlock(); }
+
+        function unlock() {
+            const input = document.getElementById('password-input');
+            const error = document.getElementById('error-msg');
+            const val = input.value.trim().toUpperCase();
+            
+            if(val === PWD) {
+                error.style.opacity = '0';
+                startMagicTransition();
+            } else {
+                error.style.opacity = '1';
+                input.style.borderColor = '#f87171';
+                input.classList.add('shake');
+                setTimeout(() => {
+                    input.style.borderColor = '';
+                    input.classList.remove('shake');
+                }, 500);
+            }
+        }
+
+        function startMagicTransition() {
+            const lock = document.getElementById('lock-screen');
+            const video = document.getElementById('video-screen');
+            const gift = document.querySelector('.gift-box');
+            
+            // Dramatic Animation
+            gift.style.transition = 'all 1s cubic-bezier(0.7, 0, 0.3, 1)';
+            gift.style.transform = 'scale(40) rotate(45deg)';
+            gift.style.opacity = '0';
+            
+            lock.classList.add('portal-open');
+            
+            setTimeout(() => {
+                lock.style.display = 'none';
+                video.style.display = 'flex';
+                setTimeout(() => {
+                    video.style.opacity = '1';
+                    if(ytPlayer && ytPlayer.playVideo) {
+                        try { ytPlayer.playVideo(); } catch(e) {}
+                    }
+                }, 100);
+            }, 1000);
+        }
+
+        function skipToInfo() {
+            const video = document.getElementById('video-screen');
+            const content = document.getElementById('main-content');
+            
+            if(ytPlayer && ytPlayer.stopVideo) {
+                try { ytPlayer.stopVideo(); } catch(e) {}
+            }
+            
+            video.style.opacity = '0';
+            setTimeout(() => {
+                video.style.display = 'none';
+                content.style.display = 'block';
+                setTimeout(() => {
+                    content.style.opacity = '1';
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                }, 100);
+            }, 800);
+        }
+
+        // Adjust video sizing on window resize to ensure responsiveness
+        window.addEventListener('resize', () => {
+            // Standard CSS covers most, but specific JS triggers can be added if using complex canvas/three.js elements
+        });
+    </script>
+</body>
+</html>
