@@ -265,16 +265,16 @@
     <!-- 1. LOCK SCREEN -->
     <div id="lock-screen">
         <div class="gift-container" id="gift-trigger">
-            <i class="fas fa-hat-wizard gift-box"></i>
+            <i class="fas fa-gift gift-box"></i>
         </div>
         
         <div class="input-card fade-in">
-            <h2 class="text-2xl mb-6 text-white font-bold tracking-widest uppercase magic-font">Revelar el Destino</h2>
+            <h2 class="text-2xl mb-6 text-white font-bold tracking-widest uppercase magic-font">Algo especial te espera</h2>
             <div class="mb-4">
                 <input type="text" id="password-input" placeholder="PALABRA MÁGICA" onkeypress="handleEnter(event)" oninput="this.value = this.value.toUpperCase()">
             </div>
-            <button class="magic-btn" onclick="unlock()">Iniciar Viaje</button>
-            <p id="error-msg" class="text-red-400 mt-4 h-4 text-sm opacity-0 transition-opacity">El portal permanece cerrado...</p>
+            <button class="magic-btn" onclick="unlock()">Descubrir</button>
+            <p id="error-msg" class="text-red-400 mt-4 h-4 text-sm opacity-0 transition-opacity">El regalo permanece cerrado...</p>
         </div>
     </div>
 
@@ -293,7 +293,7 @@
         </div>
         <div class="mt-8 flex flex-col sm:flex-row gap-4">
             <button onclick="skipToInfo()" class="px-10 py-4 rounded-full border-2 border-white/20 text-white font-bold hover:bg-white/10 hover:border-white/50 transition-all uppercase tracking-widest text-xs">
-                Saltar a la Información
+                ✨ Descubre Efteling ✨
             </button>
         </div>
     </div>
@@ -304,7 +304,7 @@
             <span class="tag">Bienvenidos a</span>
             <h1 class="title-text mb-6 text-[#f3cf7a] magic-font">Efteling</h1>
             <p class="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-                Más que un parque de atracciones, es un "Mundo de Maravillas" donde los cuentos europeos cobran vida con una atmósfera única en el mundo.
+                Más que un parque de atracciones, es un "Mundo de Maravillas" donde los cuentos cobran vida con una atmósfera única en el mundo.
             </p>
         </div>
 
@@ -383,6 +383,10 @@
                 </p>
             </div>
         </div>
+
+	<h3 class="title-text mb-4 text-center text-4xl md:text-5xl text-[#f3cf7a] magic-font">
+  Y mucho más…
+</h3>
 
         <!-- Official Call to Action -->
         <div class="text-center py-12 md:py-20">
